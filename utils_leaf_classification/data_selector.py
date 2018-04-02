@@ -4,6 +4,8 @@ add feature
 remove feature
 """
 
+import logging
+
 import pandas as pd
 
 from sklearn.model_selection import StratifiedKFold
@@ -19,17 +21,23 @@ class DataSelector:
         self.selected_x = pd.DataFrame()
         if init_selected:
             self.selected_x = x
+        logging.info("Initiate DataProcessor(id={}, y={}, x={}, init_selected={}".format(
+            id, y, x, init_selected
+        ))
 
     def set_x(self, x):
         """ set x values """
+        logging.debug("Setting x values of DataSelector")
         self.x = x
 
     def set_y(self, y):
         """ set y values """
+        logging.debug("Setting y values of DataSelector")
         self.y = y
 
     def set_id(self, id):
         """ set id values """
+        logging.debug("Setting id values of DataSelector")
         self.id = id
 
     def get_all_feature(self):
@@ -54,6 +62,7 @@ class DataSelector:
 
     def get_stratified_k_fold_data(self, n=10, id=True, y=True):
         """ get stratified fold of the data (iterator) """
+        logging.debug("Generating k fold data from DataSelector, n={}, id={}, y={}".format(n, id, y))
         skf = StratifiedKFold(n_splits=n)
         for train_idx, test_idx in skf.split(self.selected_x, self.y):
             train_x, test_x = self.selected_x.values[train_idx], self.selected_x.values[test_idx]
@@ -72,22 +81,26 @@ class DataSelector:
 
     def add(self, feature, idx):
         """ add feature-idx to the selected data """
+        logging.debug("Adding feature {}{}".format(feature, idx))
         col_str = feature+str(idx)
         if (col_str not in self.selected_x.columns) and (col_str in self.x.columns):
             self.selected_x.insert(len(self.selected_x.columns), column=col_str, value=self.x[col_str])
 
     def add_range(self, feature, idx_start, idx_end):
         """ add feature-n from idx_start to idx_end """
+        logging.info("Adding batch feature {} from {} to {}".format(feature, idx_start, idx_end))
         for idx in range(idx_start, idx_end):
             self.add(feature, idx)
 
     def add_array(self, feature, idx_array):
         """ add feature-n from idx_array """
+        logging.info("Adding batch feature {} from {}".format(feature, idx_array))
         for idx in idx_array:
             self.add(feature, idx)
 
     def add_all(self, feature=""):
         """ add all feature """
+        logging.info("Adding batch all feature {}".format(feature))
         for item in self.x.columns:
             if feature in item:
                 if item not in self.selected_x.columns:
@@ -95,22 +108,26 @@ class DataSelector:
 
     def remove(self, feature, idx):
         """ remove feature-idx from the selected data """
+        logging.debug("Removing feature {}{}".format(feature, idx))
         col_str = feature+str(idx)
         if col_str in self.selected_x.columns:
             self.selected_x.drop(col_str, 1, inplace=True)
 
     def remove_range(self, feature, idx_start, idx_end):
         """ remove feature-n from idx_start to idx_end """
+        logging.info("Removing batch feature {} from {} to {}".format(feature, idx_start, idx_end))
         for idx in range(idx_start, idx_end):
             self.remove(feature, idx)
 
     def remove_array(self, feature, idx_array):
         """ remove feature-n from idx_array """
+        logging.info("Removing batch feature {} from {}".format(feature, idx_array))
         for idx in idx_array:
             self.remove(feature, idx)
 
     def remove_all(self, feature):
         """ remove all feature """
+        logging.info("Removing batch all feature {}".format(feature))
         for item in self.selected_x.columns:
             self.selected_x.drop(item, 1, inplace=True)
 
