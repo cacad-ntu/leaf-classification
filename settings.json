@@ -1,0 +1,10 @@
+{
+    "data":{
+        "test_path": "data/test.csv",
+        "train_path": "data/train.csv",
+        "submission_dir": "data/submission"
+    },
+    "log":{
+        "dir": "logs"
+    }
+}
