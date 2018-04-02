@@ -108,3 +108,5 @@ ENV/
 
 # tmp folder
 tmp/
+logs/
+data/submissions
