@@ -9,7 +9,7 @@ from sklearn.model_selection import StratifiedKFold
 
 
 class DataLoader:
-    """ Data preprocessor class """
+    """ Data loader class """
 
     def __init__(self, id_train=None, x_train=None, y_train=None, id_test=None, x_test=None):
         self.classes = None
@@ -18,28 +18,28 @@ class DataLoader:
         self.id_train = id_train
         self.x_test = x_test
         self.id_test = id_test
-        logging.info("Initiate DataProcessor(id_train={}, x_train={}, y_train={}, id_test={}, x_test={}".format(
+        logging.info("[DataLoader] Initiate DataLoader(id_train={}, x_train={}, y_train={}, id_test={}, x_test={})".format(
             id_train, x_train, y_train, id_test, x_test
         ))
 
     def load_train(self, csv_file):
         """ load and preprocess train data from csv file """
-        logging.info("Loading train data from {}".format(csv_file))
+        logging.info("[DataLoader] Loading train data from {}".format(csv_file))
         train_data = pd.read_csv(csv_file)
         label_encode = LabelEncoder().fit(train_data.species)
         self.id_train = train_data.id
         self.y_train = label_encode.transform(train_data.species)
         self.x_train = train_data.drop(['id', 'species'], axis=1)
         self.classes = list(label_encode.classes_)
-        logging.info("Train data successfully loaded from {}".format(csv_file))
+        logging.info("[DataLoader] Train data successfully loaded from {}".format(csv_file))
 
     def load_test(self, csv_file):
         """ load and preprocess test data from csv file """
-        logging.info("Loading test data from {}".format(csv_file))
+        logging.info("[DataLoader] Loading test data from {}".format(csv_file))
         test_data = pd.read_csv(csv_file)
         self.id_test = test_data.id
         self.x_test = test_data.drop(['id'], axis=1)
-        logging.info("Test data successfully loaded from {}".format(csv_file))
+        logging.info("[DataLoader] Test data successfully loaded from {}".format(csv_file))
 
     def get_train(self):
         """ get train data (id, x_train, y_train) """
