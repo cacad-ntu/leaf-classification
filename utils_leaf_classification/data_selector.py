@@ -14,7 +14,7 @@ from sklearn.model_selection import StratifiedKFold
 class DataSelector:
     """ Data selector class """
 
-    def __init__(self, id=None, y=None, x=None, init_selected=False):
+    def __init__(self, id=pd.DataFrame(), y=pd.DataFrame(), x=pd.DataFrame(), init_selected=False):
         self.id = id
         self.x = x
         self.y = y
@@ -22,7 +22,7 @@ class DataSelector:
         if init_selected:
             self.selected_x = x
         logging.info("[DataSelector] Initiate DataSelector(id={}, y={}, x={}, init_selected={})".format(
-            id, y, x, init_selected
+            id.shape, y.shape, x.shape, init_selected
         ))
 
     def set_x(self, x):

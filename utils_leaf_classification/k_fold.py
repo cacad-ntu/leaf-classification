@@ -19,7 +19,7 @@ class ModelSelector:
         self.best_x_train = None
         self.best_y_train = None
         logging.info("[ModelSelector] Initiate ModelSelector(classifier={}, data_selector={}, k={})".format(
-            classifiers, data_selector, k
+            classifiers.__class__.__name__, data_selector.__class__.__name__, k
         ))
 
     def set_data_selector(self, data_selector):
@@ -46,30 +46,35 @@ class ModelSelector:
         best_log_loss = -1
 
         for classifier in self.classifiers:
+            name = classifier.__class__.__name__
+            cur_log_loss = 0
             for y_train, x_train, y_test, x_test in self.data_selector.get_stratified_k_fold_data(n=self.k, id=False):
-                name = classifier.__class__.__name__
                 classifier.fit(x_train, y_train)
                 y_predict = classifier.predict_proba(x_test)
-                cur_log_loss = log_loss(y_test, y_predict)
-                print("="*80)
-                print(name)
-                print("Log Loss: {}".format(cur_log_loss))
-                logging.info("[ModelSelector] Testing {} with logloss:{}".format(name, cur_log_loss))
-                if (best_log_loss < 0) or (cur_log_loss < best_log_loss):
-                    best_log_loss = cur_log_loss
-                    self.best_classifier = classifier
-                    self.best_x_train = x_train
-                    self.best_y_train = y_train
+                cur_log_loss += log_loss(y_test, y_predict)
+            cur_log_loss = cur_log_loss/self.k
+            print("="*80)
+            print(name)
+            print("Log Loss: {}".format(cur_log_loss))
+            logging.info("[ModelSelector] Testing {} with logloss:{}".format(name, cur_log_loss))
+            if (best_log_loss < 0) or (cur_log_loss < best_log_loss):
+                best_log_loss = cur_log_loss
+                self.best_classifier = classifier
+                self.best_x_train = self.data_selector.selected_x
+                self.best_y_train = self.data_selector.y
 
-    def generate_submission(self, submission_dir, classes, x_test, id_test, ret=False):
+    def generate_submission(self, submission_dir, classes, x_test, id_test, classifier=None, ret=False):
         """ Generate submission csv """
         logging.info("[ModelSelector] Generating submission file")
-        if not self.best_classifier:
-            logging.error("Generating submission when best classifier is not set")
-            raise ValueError("Generating submission when best classifier is not set")
+        if not classifier:
+            if not self.best_classifier:
+                logging.error("Generating submission when best classifier is not set")
+                raise ValueError("Generating submission when best classifier is not set")
+            else:
+                classifier = self.best_classifier
 
-        self.best_classifier.fit(self.best_x_train, self.best_y_train)
-        predictions = self.best_classifier.predict_proba(x_test)
+        classifier.fit(self.best_x_train, self.best_y_train)
+        predictions = classifier.predict_proba(x_test)
 
         submission = pd.DataFrame(predictions, columns=classes)
         submission.insert(0, 'id', id_test)
