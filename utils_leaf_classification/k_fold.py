@@ -11,7 +11,7 @@ from utils_leaf_classification.utility import ensure_dir, get_now_str
 class ModelSelector:
     """ Model selector class """
 
-    def __init__(self, classifiers=[], data_selector=[], k=10):
+    def __init__(self, classifiers={}, data_selector={}, k=10):
         self.classifiers = classifiers
         self.data_selector = data_selector
         self.k = k
@@ -22,20 +22,20 @@ class ModelSelector:
             classifiers.__class__.__name__, data_selector.__class__.__name__, k
         ))
 
-    def add_selector(self, data_selector):
+    def add_selector(self, key, data_selector):
         """ Add data selector """
         logging.debug("[ModelSelector] Adding data_selector : {}".format(data_selector))
-        self.data_selector.append(data_selector)
+        self.data_selector[key] = data_selector
 
     def set_fold(self, k):
         """ set number of fold """
         logging.debug("[ModelSelector] Setting k : {}".format(k))
         self.k = k
 
-    def add_classifier(self, classifier):
+    def add_classifier(self, key, classifier):
         """ add classifier """
         logging.debug("[ModelSelector] Adding classifier {}".format(classifier.__class__.__name__))
-        self.classifiers.append(classifier)
+        self.classifiers[key] = classifier
 
     def get_best_model(self, k=None):
         """ Select and return best model (classifier + train data) """
@@ -45,8 +45,8 @@ class ModelSelector:
 
         best_log_loss = -1
 
-        for classifier in self.classifiers:
-            for data_selector in self.data_selector:
+        for classifier_key, classifier in self.classifiers.items():
+            for data_selector_key, data_selector in self.data_selector.items():
                 name = classifier.__class__.__name__
                 cur_log_loss = 0
                 for y_train, x_train, y_test, x_test in data_selector.get_stratified_k_fold_data(n=self.k, id=False):
@@ -55,9 +55,10 @@ class ModelSelector:
                     cur_log_loss += log_loss(y_test, y_predict)
                 cur_log_loss = cur_log_loss/self.k
                 print("="*80)
-                print(name)
+                print("Classifier: {} {}".format(classifier_key, name))
+                print("Data_Selector: {}".format(data_selector_key))
                 print("Log Loss: {}".format(cur_log_loss))
-                logging.info("[ModelSelector] Testing {} with logloss:{}".format(name, cur_log_loss))
+                logging.info("[ModelSelector] Testing classifier:{} {}, data_selector:{} with logloss:{}".format(classifier_key, name, data_selector_key, cur_log_loss))
                 if (best_log_loss < 0) or (cur_log_loss < best_log_loss):
                     best_log_loss = cur_log_loss
                     self.best_classifier = classifier

@@ -28,10 +28,11 @@ def main():
 
     clf = KNeighborsClassifier(3)
     clf_2 = KNeighborsClassifier(6)
+
     ms = ModelSelector()
-    ms.add_selector(ds)
-    ms.add_classifier(clf)
-    ms.add_classifier(clf_2)
+    ms.add_selector("ds_1", ds)
+    ms.add_classifier("KNN_k3", clf)
+    ms.add_classifier("KNN_k6", clf_2)
     ms.get_best_model(k=10)
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 
