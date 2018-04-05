@@ -48,6 +48,8 @@ This [module](utils_leaf_classification/data_selector.py) contains the utility t
 
 #### ModelSelector
 This [module](utils_leaf_classification/k_fold.py) contains the utility to select the best classifier by given training data using k-fold cross validation (average result).
+- **add_selector** --- Add new data selector with given key
+- **add_classifier** --- Add new classifier with given key
 - **get_best_model** --- Try all given classifier and choose the best method (using k-fold cross validation)
 - **generate_submission** --- Generate submission file based on the specified classifier (or using best classifier if not specified)
 
