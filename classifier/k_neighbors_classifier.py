@@ -73,6 +73,15 @@ def main():
     # ds7.add_all('shape')
     # ms.add_selector("margin_shape", ds7)
 
+    # ds8 = DataSelector(
+    #     dl.id_train, dl.x_train, dl.y_train,
+    #     dl.id_test, dl.x_test
+    # )
+    # ds8.add_range('margin',0,33)
+    # ds8.add_all('shape')
+    # ds8.add_range('texture',33,65)
+    # ms.add_selector("margin0-32 and shape and texture33-64", ds8)
+
     # Add Classifier
     # clf = KNeighborsClassifier(2)
     # ms.add_classifier("k_2", clf)
