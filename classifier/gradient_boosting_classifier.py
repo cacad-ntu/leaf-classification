@@ -1,4 +1,4 @@
-""" Random Forest Classifier """
+""" Gradient Boosting Classifier """
 
 import logging
 
