@@ -70,11 +70,11 @@ class ModelSelector:
 
         print("="*80)
         logging.info("[ModelSelector] Best Classifier: {} ({})".format(self.best_classifier_key, self.best_classifier.__class__.__name__))
-        print("Best Classifier: {} ({})".format(self.best_classifier_key, self.best_classifier.__class__.__name__))
+        print("**Best Classifier**: {} ({})".format(self.best_classifier_key, self.best_classifier.__class__.__name__))
         logging.info("[ModelSelector] Best Data Selector: {}".format(self.best_data_selector_key))
-        print("Best Data Selector: {}".format(self.best_data_selector_key))
+        print("**Best Data Selector**: {}".format(self.best_data_selector_key))
         logging.info("[ModelSelector] Logloss: {}".format(best_log_loss))
-        print("Logloss: {}".format(best_log_loss))
+        print("**Logloss**: {}".format(best_log_loss))
 
 
     def generate_submission(self, submission_dir, classes, classifier=None, ret=False):
