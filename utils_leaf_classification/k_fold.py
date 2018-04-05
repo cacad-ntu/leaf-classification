@@ -15,7 +15,9 @@ class ModelSelector:
         self.classifiers = classifiers
         self.data_selector = data_selector
         self.k = k
+        self.best_classifier_key = None
         self.best_classifier = None
+        self.best_data_selector_key = None
         self.best_data_selector = None
         self.best_y_train = None
         logging.info("[ModelSelector] Initiate ModelSelector(classifier={}, data_selector={}, k={})".format(
@@ -55,14 +57,25 @@ class ModelSelector:
                     cur_log_loss += log_loss(y_test, y_predict)
                 cur_log_loss = cur_log_loss/self.k
                 print("="*80)
-                print("Classifier: {} {}".format(classifier_key, name))
+                print("Classifier: {} ({})".format(classifier_key, name))
                 print("Data_Selector: {}".format(data_selector_key))
                 print("Log Loss: {}".format(cur_log_loss))
-                logging.info("[ModelSelector] Testing classifier:{} {}, data_selector:{} with logloss:{}".format(classifier_key, name, data_selector_key, cur_log_loss))
+                logging.info("[ModelSelector] Testing classifier:{} ({}), data_selector:{} with logloss:{}".format(classifier_key, name, data_selector_key, cur_log_loss))
                 if (best_log_loss < 0) or (cur_log_loss < best_log_loss):
                     best_log_loss = cur_log_loss
+                    self.best_classifier_key = classifier_key
                     self.best_classifier = classifier
+                    self.best_data_selector_key = data_selector_key
                     self.best_data_selector = data_selector
+
+        print("="*80)
+        logging.info("[ModelSelector] Best Classifier: {} ({})".format(self.best_classifier_key, self.best_classifier.__class__.__name__))
+        print("Best Classifier: {} ({})".format(self.best_classifier_key, self.best_classifier.__class__.__name__))
+        logging.info("[ModelSelector] Best Data Selector: {}".format(self.best_data_selector_key))
+        print("Best Data Selector: {}".format(self.best_data_selector_key))
+        logging.info("[ModelSelector] Logloss: {}".format(best_log_loss))
+        print("Logloss: {}".format(best_log_loss))
+
 
     def generate_submission(self, submission_dir, classes, classifier=None, ret=False):
         """ Generate submission csv """
