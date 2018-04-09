@@ -95,8 +95,8 @@ def main():
     # clf_4 = KNeighborsClassifier(10)
     # ms.add_classifier("k_10", clf_4)
 
-    # clf_5 = KNeighborsClassifier(10, weights="distance")
-    # ms.add_classifier("k_10_distance", clf_5)
+    # clf_5 = KNeighborsClassifier(6, weights="distance")
+    # ms.add_classifier("k_6_distance", clf_5)
 
     # clf_6 = KNeighborsClassifier(10, p=1)
     # ms.add_classifier("k_10_p1", clf_6)
@@ -104,14 +104,14 @@ def main():
     # clf_7 = KNeighborsClassifier(10, weights="distance", p=1)
     # ms.add_classifier("k_10_distance_p1", clf_7)
 
-    # for i in range(10,20):
+    # for i in range(1,20):
     #     clf_k = KNeighborsClassifier(i, weights="distance", p=1)
     #     ms.add_classifier("k_{}_distance_p1".format(i), clf_k)
-    clf_11 = KNeighborsClassifier(11, weights="distance", p=1)
-    ms.add_classifier("k_11_distance_p1", clf_11)
+    clf = KNeighborsClassifier(6, weights="distance", p=1)
+    ms.add_classifier("k_6_distance_p1", clf)
 
-    # clf_7 = KNeighborsClassifier(10, weights="distance", p=3)
-    # ms.add_classifier("k_10_distance_p3", clf_7)
+    # clf_7 = KNeighborsClassifier(6, weights="distance", p=3)
+    # ms.add_classifier("k_6_distance_p3", clf_7)
 
     # clf_5 = KNeighborsClassifier(20)
     # ms.add_classifier("k_20", clf_5)
