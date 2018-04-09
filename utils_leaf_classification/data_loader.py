@@ -5,6 +5,7 @@ import logging
 import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold
 
 
@@ -30,6 +31,9 @@ class DataLoader:
         self.id_train = train_data.id
         self.y_train = label_encode.transform(train_data.species)
         self.x_train = train_data.drop(['id', 'species'], axis=1)
+        tmp_x_train = StandardScaler().fit(self.x_train).transform(self.x_train)
+        for i in range(len(self.x_train.columns)):
+            self.x_train[self.x_train.columns[i]] = tmp_x_train[:,[i]]
         self.classes = list(label_encode.classes_)
         logging.info("[DataLoader] Train data successfully loaded from {}".format(csv_file))
 
@@ -39,6 +43,9 @@ class DataLoader:
         test_data = pd.read_csv(csv_file)
         self.id_test = test_data.id
         self.x_test = test_data.drop(['id'], axis=1)
+        tmp_x_test = StandardScaler().fit(self.x_test).transform(self.x_test)
+        for i in range(len(self.x_test.columns)):
+            self.x_test[self.x_test.columns[i]] = tmp_x_test[:,[i]]
         logging.info("[DataLoader] Test data successfully loaded from {}".format(csv_file))
 
     def get_train(self):
