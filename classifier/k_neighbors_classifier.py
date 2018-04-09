@@ -15,8 +15,8 @@ def main():
     init_logger(settings.log.dir, "k_neighbors_classifier", logging.DEBUG)
 
     dl = DataLoader()
-    dl.load_test(settings.data.test_path)
     dl.load_train(settings.data.train_path)
+    dl.load_test(settings.data.test_path)
 
     ms = ModelSelector()
 
