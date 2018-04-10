@@ -7,10 +7,11 @@ from sklearn.neighbors import KNeighborsClassifier
 from utils_leaf_classification.data_loader import DataLoader
 from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
-from utils_leaf_classification.utility import init_logger, load_settings
+from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
 
 def main():
-    settings = load_settings("settings_classifier.json")
+    settings_path = get_settings_path_from_arg("k_neighbors_classifier")
+    settings = load_settings(settings_path)
 
     init_logger(settings.log.dir, "k_neighbors_classifier", logging.DEBUG)
 
@@ -104,11 +105,19 @@ def main():
     # clf_7 = KNeighborsClassifier(10, weights="distance", p=1)
     # ms.add_classifier("k_10_distance_p1", clf_7)
 
+    for i in range(1,20):
+        clf_k = KNeighborsClassifier(i)
+        ms.add_classifier("k_{}".format(i), clf_k)
+
+    # for i in range(1,20):
+    #     clf_k = KNeighborsClassifier(i, p=1)
+    #     ms.add_classifier("k_{}_p1".format(i), clf_k)
+
     # for i in range(1,20):
     #     clf_k = KNeighborsClassifier(i, weights="distance", p=1)
     #     ms.add_classifier("k_{}_distance_p1".format(i), clf_k)
-    clf = KNeighborsClassifier(6, weights="distance", p=1)
-    ms.add_classifier("k_6_distance_p1", clf)
+    # clf = KNeighborsClassifier(6, weights="distance", p=1)
+    # ms.add_classifier("k_6_distance_p1", clf)
 
     # clf_7 = KNeighborsClassifier(6, weights="distance", p=3)
     # ms.add_classifier("k_6_distance_p3", clf_7)
@@ -117,7 +126,7 @@ def main():
     # ms.add_classifier("k_20", clf_5)
 
     # Get best model
-    ms.get_best_model(k=10)
+    ms.get_best_model(k=10, plot=True)
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 
 if __name__ == "__main__":

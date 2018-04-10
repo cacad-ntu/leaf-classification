@@ -1,4 +1,4 @@
-""" Random Forest Classifier """
+""" Quadratic Discriminant Analysis Classifier """
 
 import logging
 
@@ -7,12 +7,13 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from utils_leaf_classification.data_loader import DataLoader
 from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
-from utils_leaf_classification.utility import init_logger, load_settings
+from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
 
 def main():
-    settings = load_settings("settings_classifier.json")
+    settings_path = get_settings_path_from_arg("qda_classifier")
+    settings = load_settings(settings_path)
 
-    init_logger(settings.log.dir, "random_forest_classifier", logging.DEBUG)
+    init_logger(settings.log.dir, "qda_classifier", logging.DEBUG)
 
     dl = DataLoader()
     dl.load_train(settings.data.train_path)

@@ -1,5 +1,6 @@
 """ Utility """
 
+import argparse
 import datetime
 import json
 import logging
@@ -43,3 +44,15 @@ def load_settings(file_path="settings.json", detail=""):
     if detail != "":
         return DictClass(settings[detail])
     return DictClass(settings)
+
+def get_settings_path_from_arg(description):
+    """ Parse command line arguments for setting file """
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument(
+        '--settings',
+        dest='settings',
+        type=str,
+        default='settings.json',
+        help='path of the settings file')
+
+    return parser.parse_args().settings

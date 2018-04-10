@@ -4,6 +4,8 @@ import logging
 import os
 
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 from sklearn.metrics import log_loss
 
 from utils_leaf_classification.utility import ensure_dir, get_now_str
@@ -39,13 +41,15 @@ class ModelSelector:
         logging.debug("[ModelSelector] Adding classifier {}".format(classifier.__class__.__name__))
         self.classifiers[key] = classifier
 
-    def get_best_model(self, k=None):
+    def get_best_model(self, k=None, plot=False):
         """ Select and return best model (classifier + train data) """
         logging.info("[ModelSelector] Selecting best model")
         if k:
             self.set_fold(k)
 
         best_log_loss = -1
+        log_cols=["Model", "Log Loss"]
+        list_of_log_loss = pd.DataFrame(columns=log_cols)
 
         for classifier_key, classifier in self.classifiers.items():
             for data_selector_key, data_selector in self.data_selector.items():
@@ -56,6 +60,8 @@ class ModelSelector:
                     y_predict = classifier.predict_proba(x_test)
                     cur_log_loss += log_loss(y_test, y_predict)
                 cur_log_loss = cur_log_loss/self.k
+                log_entry = pd.DataFrame([["{}({})-{}".format(name, classifier_key, data_selector_key), cur_log_loss]], columns=log_cols)
+                list_of_log_loss = list_of_log_loss.append(log_entry)
                 print("="*80)
                 print("Classifier: {} ({})".format(classifier_key, name))
                 print("Data_Selector: {}".format(data_selector_key))
@@ -75,6 +81,13 @@ class ModelSelector:
         print("**Best Data Selector**: {}".format(self.best_data_selector_key))
         logging.info("[ModelSelector] Logloss: {}".format(best_log_loss))
         print("**Logloss**: {}".format(best_log_loss))
+        if plot:
+            sns.set_color_codes("muted")
+            sns.barplot(x='Log Loss', y='Model', data=list_of_log_loss, color='r')
+
+            plt.xlabel('Log Loss')
+            plt.title('Classifier Log Loss')
+            plt.show()
 
 
     def generate_submission(self, submission_dir, classes, classifier=None, ret=False):
