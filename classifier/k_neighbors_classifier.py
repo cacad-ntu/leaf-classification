@@ -105,19 +105,19 @@ def main():
     # clf_7 = KNeighborsClassifier(10, weights="distance", p=1)
     # ms.add_classifier("k_10_distance_p1", clf_7)
 
-    for i in range(1,20):
-        clf_k = KNeighborsClassifier(i)
-        ms.add_classifier("k_{}".format(i), clf_k)
+    # for i in range(1,20):
+    #     clf_k = KNeighborsClassifier(i)
+    #     ms.add_classifier("k_{}".format(i), clf_k)
 
     # for i in range(1,20):
     #     clf_k = KNeighborsClassifier(i, p=1)
     #     ms.add_classifier("k_{}_p1".format(i), clf_k)
 
-    # for i in range(1,20):
+    # for i in range(1, 20):
     #     clf_k = KNeighborsClassifier(i, weights="distance", p=1)
     #     ms.add_classifier("k_{}_distance_p1".format(i), clf_k)
-    # clf = KNeighborsClassifier(6, weights="distance", p=1)
-    # ms.add_classifier("k_6_distance_p1", clf)
+    clf = KNeighborsClassifier(6, weights="distance", p=1)
+    ms.add_classifier("k_6_distance_p1", clf)
 
     # clf_7 = KNeighborsClassifier(6, weights="distance", p=3)
     # ms.add_classifier("k_6_distance_p3", clf_7)
@@ -127,7 +127,7 @@ def main():
 
     # Get best model
     ms.get_best_model(k=10, plot=True)
-    ms.generate_submission(settings.data.submission_dir, dl.classes)
+    ms.generate_submission(settings.data.submission_dir, dl.classes, smoothing=0.453125)
 
 if __name__ == "__main__":
     main()

@@ -90,7 +90,7 @@ class ModelSelector:
             plt.show()
 
 
-    def generate_submission(self, submission_dir, classes, classifier=None, ret=False):
+    def generate_submission(self, submission_dir, classes, classifier=None, ret=False, smoothing=-1):
         """ Generate submission csv """
         logging.info("[ModelSelector] Generating submission file")
         if not classifier:
@@ -102,6 +102,18 @@ class ModelSelector:
 
         classifier.fit(self.best_data_selector.train_x, self.best_data_selector.train_y)
         predictions = classifier.predict_proba(self.best_data_selector.test_x)
+
+        if smoothing>0:
+            logging.info("Applying threshold smoothing in predictions ...")
+            for i in range(len(predictions)):
+                max_value = max(predictions[i])
+                if (max_value > smoothing) or (list(predictions[i]).count(max_value) != 1):
+                    continue
+                for j in range(len(predictions[i])):
+                    if predictions[i][j] < max_value:
+                        predictions[i][j] = 0
+                    else:
+                        predictions[i][j] = 1
 
         submission = pd.DataFrame(predictions, columns=classes)
         submission.insert(0, 'id', self.best_data_selector.test_id)
