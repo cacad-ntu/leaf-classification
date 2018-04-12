@@ -9,10 +9,12 @@ from sklearn.metrics import classification_report
 from utils_leaf_classification.data_loader import DataLoader
 from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
-from utils_leaf_classification.utility import init_logger, load_settings
+from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
+from utils_leaf_classification.image_feature_extractor import get_feature 
 
 def main():
-    settings = load_settings("settings_classifier.json")
+    settings_path = get_settings_path_from_arg("naive_bayes_classifier")
+    settings = load_settings(settings_path)
 
     init_logger(settings.log.dir, "naive_bayes_classifier", logging.DEBUG)
 
@@ -66,7 +68,8 @@ def main():
     ms.add_selector("combined_16_48", ds8)
     # ms.add_classifier("multinb", clf)
     ms.add_classifier("bernoulli", clf_2)
-    ms.get_best_model(k=10)
+    ms.get_best_model(k=10, plot=True)
+    # print(get_feature(settings.data.image_path, dl.id_test, dl.classes))
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 
 if __name__ == "__main__":

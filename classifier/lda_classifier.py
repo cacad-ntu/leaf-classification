@@ -7,10 +7,11 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from utils_leaf_classification.data_loader import DataLoader
 from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
-from utils_leaf_classification.utility import init_logger, load_settings
+from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
 
 def main():
-    settings = load_settings("settings_classifier.json")
+    settings_path = get_settings_path_from_arg("lda_classifier")
+    settings = load_settings(settings_path)
 
     init_logger(settings.log.dir, "lda_classifier", logging.DEBUG)
 
@@ -55,8 +56,8 @@ def main():
     ms.add_selector("texture_16_48", ds7)
     ms.add_selector("combined_16_48", ds8)
     ms.add_classifier("lda", clf)
-    ms.get_best_model(k=10)
-    ms.generate_submission(settings.data.submission_dir, dl.classes)
+    ms.get_best_model(k=10, plot=True)
+    # ms.generate_submission(settings.data.submission_dir, dl.classes)
 
 if __name__ == "__main__":
     main()
