@@ -110,3 +110,4 @@ ENV/
 tmp/
 logs/
 data/submission
+data/images

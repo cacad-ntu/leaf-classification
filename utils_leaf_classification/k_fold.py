@@ -89,7 +89,6 @@ class ModelSelector:
             plt.title('Classifier Log Loss')
             plt.show()
 
-
     def generate_submission(self, submission_dir, classes, classifier=None, ret=False, smoothing=-1):
         """ Generate submission csv """
         logging.info("[ModelSelector] Generating submission file")
