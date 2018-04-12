@@ -2,7 +2,8 @@
     "data":{
         "test_path": "data/test.csv",
         "train_path": "data/train.csv",
-        "submission_dir": "data/submission"
+        "submission_dir": "data/submission",
+        "image_path": "data/images"
     },
     "log":{
         "dir": "logs"
