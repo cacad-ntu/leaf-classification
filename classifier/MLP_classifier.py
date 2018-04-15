@@ -44,17 +44,17 @@ def main():
     #beta_2(0.999) --> 'adam' solver only
     #epsilon(1e-8) --> 'adam' solver only
 
-    
+
     #margin only = 0.53 - 0.54
     #
 
     classifier = MLPClassifier(hidden_layer_sizes = (150), max_iter = 1000)
-    
+
     ms = ModelSelector()
     ms.add_selector("ds_1", ds)
-    
-    ms.add_classifier("MLP1", classifier1)
-    
+
+    ms.add_classifier("MLP1", classifier)
+
     ms.get_best_model(k=10)
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 
