@@ -44,7 +44,6 @@ class DataLoader:
         test_data = pd.read_csv(csv_file)
         self.id_test = test_data.id
         self.x_test = test_data.drop(['id'], axis=1)
-
         logging.info("[DataLoader] Test data successfully loaded from {}".format(csv_file))
 
     def load_from_images(self, image_path, k=None, batch_size=None, verbose=False):
