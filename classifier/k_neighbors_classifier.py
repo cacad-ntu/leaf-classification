@@ -18,16 +18,22 @@ def main():
 
     init_logger(settings.log.dir, "k_neighbors_classifier", logging.DEBUG)
 
+    # Load test and training
     dl = DataLoader()
     dl.load_train(settings.data.train_path)
     dl.load_test(settings.data.test_path)
-    k = np.size(dl.classes)
+    dl.scale_data()
+
+    # Image feature extraction
+    k = np.size(dl.classes) *10
     dl.load_from_images(settings.data.image_path, k, k*3, verbose=False)
 
+    # Dimensionality reduction
     dr = DataReducer(dl.x_train, dl.x_test)
     dr.pca_data_reduction()
     dl.set_x_train(dr.get_pca_x_train())
     dl.set_x_test(dr.get_pca_x_test())
+
 
     ms = ModelSelector()
 
@@ -123,7 +129,7 @@ def main():
     #     clf_k = KNeighborsClassifier(i, p=1)
     #     ms.add_classifier("k_{}_p1".format(i), clf_k)
 
-    for i in range(1, 20):
+    for i in range(1, 40):
         clf_k = KNeighborsClassifier(i, weights="distance", p=1)
         ms.add_classifier("k_{}_distance_p1".format(i), clf_k)
     # clf = KNeighborsClassifier(6, weights="distance", p=1)
@@ -136,8 +142,8 @@ def main():
     # ms.add_classifier("k_20", clf_5)
 
     # Get best model
-    ms.get_best_model(k=2, plot=True)
-    ms.generate_submission(settings.data.submission_dir, dl.classes, smoothing=0.453125)
+    ms.get_best_model(k=10, plot=True)
+    ms.generate_submission(settings.data.submission_dir, dl.classes)
 
 if __name__ == "__main__":
     main()
