@@ -123,11 +123,11 @@ def main():
     #     clf_k = KNeighborsClassifier(i, p=1)
     #     ms.add_classifier("k_{}_p1".format(i), clf_k)
 
-    # for i in range(1, 20):
-    #     clf_k = KNeighborsClassifier(i, weights="distance", p=1)
-    #     ms.add_classifier("k_{}_distance_p1".format(i), clf_k)
-    clf = KNeighborsClassifier(6, weights="distance", p=1)
-    ms.add_classifier("k_6_distance_p1", clf)
+    for i in range(1, 20):
+        clf_k = KNeighborsClassifier(i, weights="distance", p=1)
+        ms.add_classifier("k_{}_distance_p1".format(i), clf_k)
+    # clf = KNeighborsClassifier(6, weights="distance", p=1)
+    # ms.add_classifier("k_6_distance_p1", clf)
 
     # clf_7 = KNeighborsClassifier(6, weights="distance", p=3)
     # ms.add_classifier("k_6_distance_p3", clf_7)
