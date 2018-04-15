@@ -2,9 +2,12 @@
 
 import logging
 
+import numpy as np
+
 from sklearn.neighbors import KNeighborsClassifier
 
 from utils_leaf_classification.data_loader import DataLoader
+from utils_leaf_classification.data_reducer import DataReducer
 from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
 from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
@@ -18,6 +21,13 @@ def main():
     dl = DataLoader()
     dl.load_train(settings.data.train_path)
     dl.load_test(settings.data.test_path)
+    k = np.size(dl.classes)
+    dl.load_from_images(settings.data.image_path, k, k*3, verbose=False)
+
+    dr = DataReducer(dl.x_train, dl.x_test)
+    dr.pca_data_reduction()
+    dl.set_x_train(dr.get_pca_x_train())
+    dl.set_x_test(dr.get_pca_x_test())
 
     ms = ModelSelector()
 
@@ -126,7 +136,7 @@ def main():
     # ms.add_classifier("k_20", clf_5)
 
     # Get best model
-    ms.get_best_model(k=10, plot=True)
+    ms.get_best_model(k=2, plot=True)
     ms.generate_submission(settings.data.submission_dir, dl.classes, smoothing=0.453125)
 
 if __name__ == "__main__":

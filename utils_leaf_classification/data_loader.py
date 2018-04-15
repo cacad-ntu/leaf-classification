@@ -2,11 +2,14 @@
 
 import logging
 
+import numpy as np
 import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold
+
+from utils_leaf_classification import image_feature_extractor
 
 
 class DataLoader:
@@ -32,10 +35,6 @@ class DataLoader:
         self.id_train = train_data.id
         self.y_train = label_encode.transform(train_data.species)
         self.x_train = train_data.drop(['id', 'species'], axis=1)
-        self.scaler = StandardScaler().fit(self.x_train)
-        tmp_x_train = self.scaler.transform(self.x_train)
-        for i in range(len(self.x_train.columns)):
-            self.x_train[self.x_train.columns[i]] = tmp_x_train[:,[i]]
         self.classes = list(label_encode.classes_)
         logging.info("[DataLoader] Train data successfully loaded from {}".format(csv_file))
 
@@ -45,12 +44,43 @@ class DataLoader:
         test_data = pd.read_csv(csv_file)
         self.id_test = test_data.id
         self.x_test = test_data.drop(['id'], axis=1)
-        if self.scaler is None:
-            self.scaler = StandardScaler().fit(self.x_test)
+
+        logging.info("[DataLoader] Test data successfully loaded from {}".format(csv_file))
+
+    def load_from_images(self, image_path, k=None, batch_size=None, verbose=False):
+        """ Load train and test feature from images """
+        logging.info("[DataLoader] Loading data from image, path:{}".format(image_path))
+        if not k:
+            k = np.size(self.classes)
+
+        all_id = self.id_train.append(self.id_test)
+
+        all_histo_feature = image_feature_extractor.get_feature(image_path, all_id, k, batch_size, verbose)
+        train_feature = self.id_train.to_frame().join(all_histo_feature.set_index('id'), on='id')
+        self.x_train = self.x_train.join(train_feature.drop(['id'], axis=1))
+        test_feature = self.id_test.to_frame().join(all_histo_feature.set_index('id'), on='id')
+        self.x_test = self.x_test.join(test_feature.drop(['id'], axis=1))
+
+    def scale_data(self):
+        """ Scale test and train data """
+        logging.info("[DataLoader] Scaling data")
+        self.scaler = StandardScaler().fit(self.x_train)
+        tmp_x_train = self.scaler.transform(self.x_train)
+        for i in range(len(self.x_train.columns)):
+            self.x_train[self.x_train.columns[i]] = tmp_x_train[:,[i]]
         tmp_x_test = self.scaler.transform(self.x_test)
         for i in range(len(self.x_test.columns)):
             self.x_test[self.x_test.columns[i]] = tmp_x_test[:,[i]]
-        logging.info("[DataLoader] Test data successfully loaded from {}".format(csv_file))
+
+    def set_x_train(self, x_train):
+        """ Set x_train value """
+        logging.debug("[DataLoader] Setting x train values {}".format(x_train.shape))
+        self.x_train = x_train
+
+    def set_x_test(self, x_test):
+        """ Set x_test value """
+        logging.debug("[DataLoader] Setting x test values {}".format(x_test.shape))
+        self.x_test = x_test
 
     def get_train(self):
         """ get train data (id, x_train, y_train) """

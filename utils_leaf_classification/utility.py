@@ -6,6 +6,8 @@ import json
 import logging
 import os
 
+import pandas as pd
+
 class DictClass:
     """ Creating class from dictionary """
     def __init__(self, dictionary):
