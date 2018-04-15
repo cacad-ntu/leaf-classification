@@ -8,7 +8,11 @@ import logging
 
 import pandas as pd
 
+import re
+
 from sklearn.model_selection import StratifiedKFold
+
+from sklearn.linear_model import RandomizedLasso
 
 
 class DataSelector:
@@ -146,3 +150,35 @@ class DataSelector:
                 self.selected_x_train.drop(item, 1, inplace=True)
                 self.selected_x_test.drop(item, 1, inplace=True)
 
+    def auto_add_lasso(self, threshold):
+        """ add features based on randomized lasso """
+        logging.info("[DataSelector] Starting randomized lasso...")
+        names = self.train_x.columns.tolist()
+        rlasso = RandomizedLasso(alpha=0.005)
+        rlasso.fit(self.train_x, self.train_y)
+        result = sorted(zip(map(lambda x: round(x, 4), rlasso.scores_), 
+                 names), reverse=True)
+        for i, j in result:
+            r = re.compile('([a-zA-Z]+)([0-9]+)')
+            feature = r.match(j).groups()[0]
+            idx = r.match(j).groups()[1]
+            print("Feature: {}, idx: {}".format(feature, idx))
+            if i >= threshold:
+                self.add(feature, idx)
+
+    def auto_remove_lasso(self, threshold):
+        """ remove features based on randomized lasso """
+        logging.info("[DataSelector] Removing features based on randomized lasso...")
+        names = self.selected_x_train.tolist()
+        rlasso = RandomizedLasso(alpha=0.005)
+        rlasso.fit(self.selected_x_train, self.train_y)
+        result = sorted(zip(map(lambda x: round(x, 4), rlasso.scores_), 
+                 names), reverse=True)
+        for i, j in result:
+            r = re.compile('([a-zA-Z]+)([0-9]+)')
+            feature = r.match(j).groups()[0]
+            idx = r.match(j).groups()[1]
+            print("Feature: {}, idx: {}".format(feature, idx))
+            if i < threshold:
+                self.selected_x_train.drop(str(feature+idx), 1, inplace=True)
+                self.selected_x_test.drop(str(feature+idx), 1, inplace=True)
