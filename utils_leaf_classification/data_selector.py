@@ -169,7 +169,7 @@ class DataSelector:
     def auto_remove_lasso(self, threshold):
         """ remove features based on randomized lasso """
         logging.info("[DataSelector] Removing features based on randomized lasso...")
-        names = self.selected_x_train.tolist()
+        names = self.selected_x_train.columns.tolist()
         rlasso = RandomizedLasso(alpha=0.005)
         rlasso.fit(self.selected_x_train, self.train_y)
         result = sorted(zip(map(lambda x: round(x, 4), rlasso.scores_),
