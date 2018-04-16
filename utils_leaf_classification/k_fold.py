@@ -99,8 +99,8 @@ class ModelSelector:
             else:
                 classifier = self.best_classifier
 
-        classifier.fit(self.best_data_selector.train_x, self.best_data_selector.train_y)
-        predictions = classifier.predict_proba(self.best_data_selector.test_x)
+        classifier.fit(self.best_data_selector.selected_x_train, self.best_data_selector.train_y)
+        predictions = classifier.predict_proba(self.best_data_selector.selected_x_test)
 
         if smoothing>0:
             logging.info("Applying threshold smoothing in predictions ...")
