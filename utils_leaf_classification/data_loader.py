@@ -15,7 +15,7 @@ from utils_leaf_classification import image_feature_extractor
 class DataLoader:
     """ Data loader class """
 
-    def __init__(self, id_train=None, x_train=None, y_train=None, id_test=None, x_test=None):
+    def __init__(self, id_train=pd.DataFrame(), x_train=pd.DataFrame(), y_train=pd.DataFrame(), id_test=pd.DataFrame(), x_test=pd.DataFrame()):
         self.classes = None
         self.x_train = x_train
         self.y_train = y_train
@@ -24,7 +24,7 @@ class DataLoader:
         self.id_test = id_test
         self.scaler = None
         logging.info("[DataLoader] Initiate DataLoader(id_train={}, x_train={}, y_train={}, id_test={}, x_test={})".format(
-            id_train, x_train, y_train, id_test, x_test
+            id_train.shape, x_train.shape, y_train.shape, id_test.shape, x_test.shape
         ))
 
     def load_train(self, csv_file):

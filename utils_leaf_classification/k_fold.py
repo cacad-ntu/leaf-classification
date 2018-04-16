@@ -92,8 +92,8 @@ class ModelSelector:
     def generate_submission(self, submission_dir, classes, classifier=None, ret=False, smoothing=-1):
         """ Generate submission csv """
         logging.info("[ModelSelector] Generating submission file")
-        if not classifier:
-            if not self.best_classifier:
+        if classifier == None:
+            if self.best_classifier == None:
                 logging.error("Generating submission when best classifier is not set")
                 raise ValueError("Generating submission when best classifier is not set")
             else:
