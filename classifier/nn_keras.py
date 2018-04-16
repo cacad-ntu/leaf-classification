@@ -31,9 +31,9 @@ from utils_leaf_classification.utility import init_logger, load_settings, get_se
 ## Read data from the CSV file
 
 class NNKeras:
-    def __init__(self):
+    def __init__(self, inp):
         self.model = Sequential()
-        self.model.add(Dense(1500,input_dim=192,  kernel_initializer='uniform', activation='relu'))
+        self.model.add(Dense(1500,input_dim=inp,  kernel_initializer='uniform', activation='relu'))
         self.model.add(Dropout(0.1))
         self.model.add(Dense(1500, activation='sigmoid'))
         self.model.add(Dropout(0.1))
@@ -124,18 +124,38 @@ def main():
 
     ms = ModelSelector()
 
+    
+    # Image feature extraction
+    k = np.size(dl.classes) *10
+    dl.load_from_images(settings.data.image_path, k, k*3, verbose=False)
+
     # Add Data Selector
     ds = DataSelector(
         dl.id_train, dl.x_train, dl.y_train,
         dl.id_test, dl.x_test
     )
     ds.add_all()
+
+    # Use lasso
+    ds.auto_remove_lasso(0.17)
+
+    # Dimensionality reduction
+    dr = DataReducer(ds.train_x, ds.test_x)
+    dr.pca_data_reduction()
+    ds = DataSelector(
+        dl.id_train, dr.x_train, dl.y_train,
+        dl.id_test, dr.x_test
+    )
+    ds.add_all()
+
     ms.add_selector("all_feature", ds)
 
-    clf = NNKeras()
+    clf = NNKeras(ds.selected_x_test.shape[1])
     ms.add_classifier("nn_keras", clf)
 
-    ms.get_best_model(k=10)
+    # ms.get_best_model(k=10)
+    ms.best_classifier = clf
+    ms.best_data_selector = ds
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 
 
