@@ -60,7 +60,7 @@ class ModelSelector:
                     y_predict = classifier.predict_proba(x_test)
                     cur_log_loss += log_loss(y_test, y_predict)
                 cur_log_loss = cur_log_loss/self.k
-                log_entry = pd.DataFrame([["{}({})-{}".format(name, classifier_key, data_selector_key), cur_log_loss]], columns=log_cols)
+                log_entry = pd.DataFrame([["{}-{}".format(classifier_key, data_selector_key), cur_log_loss]], columns=log_cols)
                 list_of_log_loss = list_of_log_loss.append(log_entry)
                 print("="*80)
                 print("Classifier: {} ({})".format(classifier_key, name))
