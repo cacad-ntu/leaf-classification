@@ -5,6 +5,7 @@ import logging
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
 from utils_leaf_classification.data_loader import DataLoader
+from utils_leaf_classification.data_reducer import DataReducer
 from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
 from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
@@ -14,12 +15,17 @@ def main():
     settings = load_settings(settings_path)
 
     init_logger(settings.log.dir, "qda_classifier", logging.DEBUG)
+    ms = ModelSelector()
 
+    # Load test and training
     dl = DataLoader()
     dl.load_train(settings.data.train_path)
     dl.load_test(settings.data.test_path)
+    dl.scale_data()
 
-    ms = ModelSelector()
+    # Image feature extraction
+    k = np.size(dl.classes) *10
+    dl.load_from_images(settings.data.image_path, k, k*3, verbose=False)
 
     # Add Data Selector
     ds = DataSelector(
@@ -27,63 +33,20 @@ def main():
         dl.id_test, dl.x_test
     )
     ds.add_all()
-    ms.add_selector("all_feature", ds)
 
-    # ds2 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds2.add_all('margin')
-    # ms.add_selector("margin_only", ds2)
+    # Use lasso
+    ds.auto_remove_lasso(0.17)
 
-    # ds3 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds3.add_all('shape')
-    # ms.add_selector("shape_only", ds3)
+    # Dimensionality reduction
+    dr = DataReducer(ds.train_x, ds.test_x)
+    dr.pca_data_reduction()
+    ds = DataSelector(
+        dl.id_train, dr.x_train, dl.y_train,
+        dl.id_test, dr.x_test
+    )
+    ds.add_all()
 
-    # ds4 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds4.add_all('texture')
-    # ms.add_selector("texture_only", ds4)
-
-    # ds5 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds5.add_all('texture')
-    # ds5.add_all('shape')
-    # ms.add_selector("texture_shape", ds5)
-
-    # ds6 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds6.add_all('texture')
-    # ds6.add_all('margin')
-    # ms.add_selector("texture_margin", ds6)
-
-    # ds7 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds7.add_all('margin')
-    # ds7.add_all('shape')
-    # ms.add_selector("margin_shape", ds7)
-
-    # ds8 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds8.add_range('margin',0,33)
-    # ds8.add_all('shape')
-    # ds8.add_range('texture',33,65)
-    # ms.add_selector("margin0-32 and shape and texture33-64", ds8)
-
-    # Add Classifier
+    # Add Classifier to model selector
     clf = QuadraticDiscriminantAnalysis(store_covariance=True)
     ms.add_classifier("store_covariance=True", clf)
 
