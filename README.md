@@ -38,6 +38,7 @@ There are some utilities can be used for the classifier. The utility modules loc
 This [module](utils_leaf_classification/data_loader.py) contains the utility to load and preprocess the train and data set.
 - **load_train** --- Load train data, separate the id, encode the species and generates all the classes
 - **load_test** --- Load test data and separate the id
+- **load_from_image** --- Load features from images using SIFT Descriptor
 
 #### DataSelector
 This [module](utils_leaf_classification/data_selector.py) contains the utility to add or remove feature from data set.
@@ -45,6 +46,11 @@ This [module](utils_leaf_classification/data_selector.py) contains the utility t
 - **add_range**|**remove_range** --- Add/remove a specific feature with all the index in between the given range (`[start, end)`)
 - **add_array**|**remove_array** --- Add/remove a specific feature with index specified in the array
 - **add_all**|**remove_array** --- Add/remove all index of specified feature (or add/remove all feature if not specified)
+- **auto_add_lasso**|**auto_remove_lasso** --- Add/remove feature using LASSO
+
+#### DataReducer
+This [module](utils_leaf_classification/data_reducer.py) contains the utility to remove the feature dimension using PCA.
+- **pca_data_reduction** --- Reduce feature using PCA dimensionality reduction
 
 #### ModelSelector
 This [module](utils_leaf_classification/k_fold.py) contains the utility to select the best classifier by given training data using k-fold cross validation (average result).
@@ -68,6 +74,8 @@ The settings file in this project can be used to minimalize code changes. The se
 The data directory used to store the data used in the classification process.
 - [**Train Data**](data/train.csv)
 - [**Test Data**](data/test.csv)
+- [**Images**](data/images)
+- [**Generated Submission**](data/submission)
 - [**Submission Example**](data/submission.csv)
 
 
