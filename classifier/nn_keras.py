@@ -41,10 +41,10 @@ class NNKeras:
 
 def main():
 
-    settings_path = get_settings_path_from_arg("k_neighbors_classifier")
+    settings_path = get_settings_path_from_arg("nn_keras")
     settings = load_settings(settings_path)
 
-    init_logger(settings.log.dir, "k_neighbors_classifier", logging.DEBUG)
+    init_logger(settings.log.dir, "nn_keras", logging.DEBUG)
     ms = ModelSelector()
 
     # Load test and training
@@ -72,7 +72,7 @@ def main():
     ms.add_classifier("nn_keras", clf)
 
     # Get best model
-    ms.get_best_model(k=10)
+    ms.get_best_model()
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 
 if __name__ == "__main__":
