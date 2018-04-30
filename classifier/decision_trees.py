@@ -11,7 +11,7 @@ from utils_leaf_classification.utility import init_logger, load_settings, get_se
 
 
 def main():
-    settings_path = get_settings_path_from_arg("decision_tree_classifier")
+    settings_path = get_settings_path_from_arg("decision_tree")
     settings = load_settings(settings_path)
     
     init_logger(settings.log.dir, "decision_tree_classifier", logging.DEBUG)
@@ -53,9 +53,8 @@ def main():
     ds4.add_all("texture")
     ms.add_selector("texture_only", ds4)
 
-    for i in range(0, 20):
-        clf_k = DecisionTreeClassifier(min_impurity_decrease=0.001*i)
-        ms.add_classifier("k_{}".format(i), clf_k)
+    clf = DecisionTreeClassifier()
+    ms.add_classifier("", clf)
 
     ms.get_best_model(k=10, plot=True)
     ms.generate_submission(settings.data.submission_dir, dl.classes)

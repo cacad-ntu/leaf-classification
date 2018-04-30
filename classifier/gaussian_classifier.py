@@ -14,12 +14,12 @@ def main():
     settings = load_settings(settings_path)
     
     init_logger(settings.log.dir, "gaussian_classifier", logging.DEBUG)
+    ms = ModelSelector()
 
+    # Load test and training
     dl = DataLoader()
     dl.load_train(settings.data.train_path)
     dl.load_test(settings.data.test_path)
-
-    ms = ModelSelector()
 
     # Add Data Selector
     ds = DataSelector(
@@ -27,34 +27,15 @@ def main():
         dl.id_test, dl.x_test
     )
     ds.add_all()
+    
+    # Add data selection to model selector
     ms.add_selector("all_feature", ds)
 
-    ds2 = DataSelector(
-        dl.id_train, dl.x_train, dl.y_train,
-        dl.id_test, dl.x_test
-    )
-    ds2.add_all("margin")
-    ms.add_selector("margin_only", ds2)
-
-    
-    ds3 = DataSelector(
-        dl.id_train, dl.x_train, dl.y_train,
-        dl.id_test, dl.x_test
-    )
-    ds3.add_all("shape")
-    ms.add_selector("shape_only", ds3)
-
-
-    ds4 = DataSelector(
-        dl.id_train, dl.x_train, dl.y_train,
-        dl.id_test, dl.x_test
-    )
-    ds4.add_all("texture")
-    ms.add_selector("texture_only", ds4)
-
-
+    # Add Classifier
     clf = GaussianNB()
     ms.add_classifier("gaussian_test",clf)
+    
+    # Get best model
     ms.get_best_model(k=10, plot=True)
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 

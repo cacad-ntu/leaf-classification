@@ -14,12 +14,12 @@ def main():
     settings = load_settings(settings_path)
 
     init_logger(settings.log.dir, "gradient_boosting_classifier", logging.DEBUG)
+    ms = ModelSelector()
 
+    # Load test and training
     dl = DataLoader()
     dl.load_train(settings.data.train_path)
     dl.load_test(settings.data.test_path)
-
-    ms = ModelSelector()
 
     # Add Data Selector
     ds = DataSelector(
@@ -27,65 +27,13 @@ def main():
         dl.id_test, dl.x_test
     )
     ds.add_all()
+
+    # Add data selection to model selector
     ms.add_selector("all_feature", ds)
 
-    # ds2 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds2.add_all('margin')
-    # ms.add_selector("margin_only", ds2)
-
-    # ds3 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds3.add_all('shape')
-    # ms.add_selector("shape_only", ds3)
-
-    # ds4 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds4.add_all('texture')
-    # ms.add_selector("texture_only", ds4)
-
-    # ds5 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds5.add_all('texture')
-    # ds5.add_all('shape')
-    # ms.add_selector("texture_shape", ds5)
-
-    # ds6 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds6.add_all('texture')
-    # ds6.add_all('margin')
-    # ms.add_selector("texture_margin", ds6)
-
-    # ds7 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds7.add_all('margin')
-    # ds7.add_all('shape')
-    # ms.add_selector("margin_shape", ds7)
-
-    # ds8 = DataSelector(
-    #     dl.id_train, dl.x_train, dl.y_train,
-    #     dl.id_test, dl.x_test
-    # )
-    # ds8.add_range('margin',0,33)
-    # ds8.add_all('shape')
-    # ds8.add_range('texture',33,65)
-    # ms.add_selector("margin0-32 and shape and texture33-64", ds8)
-
     # Add Classifier
-    clf_4 = GradientBoostingClassifier(n_estimators=100, random_state=0, min_samples_leaf=3, verbose=True)
-    ms.add_classifier("n_estimators=100, random_state=0, min_samples_leaf=3", clf_4)
+    clf = GradientBoostingClassifier(n_estimators=100, random_state=0, min_samples_leaf=3, verbose=True)
+    ms.add_classifier("gradient_boosting_classifier", clf)
 
     # Get best model
     ms.get_best_model(k=10)
