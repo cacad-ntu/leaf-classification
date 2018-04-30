@@ -2,12 +2,9 @@
 import logging
 
 import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 from keras.models import Sequential
-from keras.layers import Dense,Dropout,Activation
+from keras.layers import Dense, Dropout
 from keras.utils.np_utils import to_categorical
 from keras.callbacks import EarlyStopping
 
@@ -37,7 +34,6 @@ class NNKeras:
     def predict_proba(self, x_test):
         return self.model.predict_proba(x_test)
 
-        
 
 def main():
 
@@ -64,6 +60,18 @@ def main():
     )
     ds.add_all()
 
+    # Use lasso
+    ds.auto_remove_lasso(0.17)
+
+    # Dimensionality reduction
+    dr = DataReducer(ds.train_x, ds.test_x)
+    dr.pca_data_reduction()
+    ds = DataSelector(
+        dl.id_train, dr.x_train, dl.y_train,
+        dl.id_test, dr.x_test
+    )
+    ds.add_all()
+
     # Add data selection to model selector
     ms.add_selector("all_feature", ds)
 
@@ -72,7 +80,7 @@ def main():
     ms.add_classifier("nn_keras", clf)
 
     # Get best model
-    ms.get_best_model()
+    ms.get_best_model(k=10, plot=True)
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 
 if __name__ == "__main__":

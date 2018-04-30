@@ -2,6 +2,8 @@
 
 import logging
 
+import numpy as np
+
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
 from utils_leaf_classification.data_loader import DataLoader
@@ -59,7 +61,7 @@ def main():
     ms.add_classifier("final", clf)
 
     # Get best model
-    ms.get_best_model(k=10)
+    ms.get_best_model(k=10, plot=True)
     ms.generate_submission(settings.data.submission_dir, dl.classes)
 
 if __name__ == "__main__":

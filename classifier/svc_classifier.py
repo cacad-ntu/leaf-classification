@@ -2,8 +2,8 @@
 
 import logging
 
-from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+import numpy as np
+
 from sklearn.svm import SVC
 
 from utils_leaf_classification.data_loader import DataLoader

@@ -2,6 +2,8 @@
 
 import logging
 
+import numpy as np
+
 from sklearn.svm import NuSVC
 
 from utils_leaf_classification.data_loader import DataLoader

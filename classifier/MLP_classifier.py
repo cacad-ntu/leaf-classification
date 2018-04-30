@@ -1,14 +1,16 @@
+""" MLP Classifier - Sklearn """
+
+import logging
+
+import numpy as np
+
+from sklearn.neural_network import MLPClassifier
+
 from utils_leaf_classification.data_loader import DataLoader
 from utils_leaf_classification.data_reducer import DataReducer
 from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
-from utils_leaf_classification.utility import init_logger, load_settings
-
-from sklearn.neural_network import MLPClassifier
-
-import logging
-import numpy
-import pandas
+from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
 
 def main():
     settings_path = get_settings_path_from_arg("MLP_classifier")

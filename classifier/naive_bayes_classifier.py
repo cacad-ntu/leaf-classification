@@ -1,20 +1,17 @@
 """ Naive Bayes Classifier """
 
 import logging
-import re
+
 import numpy as np
 
 from sklearn.naive_bayes import MultinomialNB, BernoulliNB
-from sklearn.linear_model import RandomizedLasso
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report
 
 from utils_leaf_classification.data_loader import DataLoader
 from utils_leaf_classification.data_reducer import DataReducer
 from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
 from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
-from utils_leaf_classification.image_feature_extractor import get_feature 
+
 
 def main():
     settings_path = get_settings_path_from_arg("naive_bayes_classifier")
@@ -46,7 +43,7 @@ def main():
         dl.id_test, dl.x_test
     )
     ds.add_all()
-    
+
     # Use lasso
     ds.auto_remove_lasso(0.17)
 

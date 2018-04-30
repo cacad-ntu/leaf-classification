@@ -2,6 +2,8 @@
 
 import logging
 
+import numpy as np
+
 from sklearn.ensemble import RandomForestClassifier
 
 from utils_leaf_classification.data_loader import DataLoader
@@ -10,7 +12,6 @@ from utils_leaf_classification.data_selector import DataSelector
 from utils_leaf_classification.k_fold import ModelSelector
 from utils_leaf_classification.utility import init_logger, load_settings, get_settings_path_from_arg
 
-import numpy as np
 
 def main():
     settings_path = get_settings_path_from_arg("random_forest_classifier")
