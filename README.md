@@ -1,6 +1,9 @@
 # Leaf Classification
 CZ4041 Machine Learning - Assignmnent. Solution to Kaggle - [Leaf Classification](https://www.kaggle.com/c/leaf-classification) problem.
 
+- [Report](https://www.overleaf.com/15829277brnqrprvmbms#/60282723/)
+- [Presentation](https://www.overleaf.com/15402447qhfsrwpgyvng#/58375319/)
+
 ## Getting Started
 
 ### Requirements
